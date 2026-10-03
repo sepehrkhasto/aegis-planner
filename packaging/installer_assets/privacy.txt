@@ -1,0 +1,12 @@
+Aegis Planner - private, encrypted, offline.
+
+- Your tasks, notes, habits and goals are stored in ONE encrypted file on this computer:
+    %APPDATA%\AegisPlanner\vault.aegis
+- Encryption: AES-256-GCM. The key is derived from your master password with PBKDF2-SHA256 (600,000 rounds).
+- By default the app makes no network connections. There is no account and no telemetry; your data is never uploaded.
+  The only exception is an optional update check (Settings > About), OFF by default: if you turn it on, the app asks
+  GitHub once a day for the latest version number and sends nothing about you or your vault.
+- Encrypted automatic backups are kept next to it in \backups (you can move them in Settings).
+- If you forget your master password AND have no recovery key, the data cannot be recovered by anyone.
+  Create a recovery key from Settings > Security right after your first launch.
+- Uninstalling never deletes your data unless you explicitly choose to.

@@ -1,0 +1,80 @@
+name: release
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -r requirements-dev.txt
+
+      - name: Read version
+        id: ver
+        shell: bash
+        run: echo "version=$(python -c 'from aegis_desktop import __version__ as v; print(v)')" >> "$GITHUB_OUTPUT"
+
+      - name: Check that the tag matches the version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          if [ "${GITHUB_REF_NAME#v}" != "${{ steps.ver.outputs.version }}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match version ${{ steps.ver.outputs.version }}"; exit 1
+          fi
+
+      - name: Tests
+        run: python -m pytest tests -q -p no:cacheprovider
+        env:
+          QT_QPA_PLATFORM: offscreen
+
+      - name: Build application
+        run: pyinstaller packaging/aegis.spec --noconfirm --clean
+
+      - name: Build installer
+        run: |
+          choco install innosetup -y --no-progress
+          & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" "/DAppVersion=${{ steps.ver.outputs.version }}" packaging\installer.iss
+
+      - name: Portable archive and checksums
+        shell: pwsh
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          Compress-Archive -Path dist\AegisPlanner -DestinationPath "installer_output\AegisPlanner-portable-$v.zip"
+          Push-Location installer_output
+          Get-ChildItem -File | Where-Object { $_.Name -ne 'SHA256SUMS.txt' } | ForEach-Object {
+            $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower()
+            "$h  $($_.Name)"
+          } | Set-Content -Encoding ascii SHA256SUMS.txt
+          Get-Content SHA256SUMS.txt
+          Pop-Location
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AegisPlanner-${{ steps.ver.outputs.version }}
+          path: installer_output/*
+
+      - name: Publish GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $v = "${{ steps.ver.outputs.version }}"
+          $sums = (Get-Content installer_output\SHA256SUMS.txt -Raw).TrimEnd()
+          $fence = '```'
+          $notes = @(
+            "## Aegis Planner $v", "",
+            "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md).", "",
+            "### SHA-256", "", $fence, $sums, $fence, "",
+            "The installer is not code-signed, so Windows SmartScreen may warn. Verify the hash with ``Get-FileHash <file> -Algorithm SHA256`` (see the README)."
+          ) -join "`n"
+          Set-Content -Path release_notes.md -Value $notes -Encoding utf8
+          gh release create "${{ github.ref_name }}" (Get-ChildItem installer_output -File).FullName --title "Aegis Planner $v" --notes-file release_notes.md

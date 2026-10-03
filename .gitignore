@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Build output
+build/
+dist/
+installer_output/
+qa_output/
+qa_output.zip
+
+# Test / lint caches and coverage
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Personal data: a vault, its backups, preferences and logs must never be committed
+*.aegis
+*.aegis.tmp
+backups/
+vault*.json
+prefs.json
+app.lock
+aegis.log*
+*.damaged-*
+
+# Secrets and signing material
+*.pfx
+*.p12
+*.pem
+*.key
+.env
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
