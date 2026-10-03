@@ -75,19 +75,20 @@ def test_collapse_animates_the_width_then_lands_exactly(win):
     win.set_pref("side_compact", False); win.set_pref("reduce_motion", False)
 
 
-def test_pointer_light_brightens_nearby_items_and_stops_when_idle(win):
+def test_pointer_light_brightens_nearby_items_and_stops_when_idle(win, qtbot):
     setup_vault(win)
     win.show(); QTest.qWait(80)
     b = win.nav_btns["calendar"]
     QCursor.setPos(b.mapToGlobal(b.rect().center()))
     ev = QEnterEvent(QPointF(10, 10), QPointF(10, 10), QPointF(10, 10))
     QApplication.sendEvent(win.side, ev)
-    QTest.qWait(300)
-    assert win.side._poll.isActive() and b.prox > 0.2
+    # Wait for the condition instead of a fixed delay: timer ticks are slower on loaded CI runners.
+    qtbot.waitUntil(lambda: b.prox > 0.2, timeout=5000)
+    assert win.side._poll.isActive()
     assert b.prox > win.nav_btns["trash"].prox                    # the nearer item is lit more
     QApplication.sendEvent(win.side, QEvent_leave())
-    QTest.qWait(700)
-    assert not win.side._poll.isActive() and b.prox == 0.0 and win.side._ga == 0.0
+    qtbot.waitUntil(lambda: not win.side._poll.isActive(), timeout=8000)
+    assert b.prox == 0.0 and win.side._ga == 0.0
 
 
 def QEvent_leave():
