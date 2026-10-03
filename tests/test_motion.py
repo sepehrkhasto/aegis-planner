@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Motion & detail layer: every animation must start, finish, clean up after itself and honour 'reduce motion'."""
+import time
 import datetime as dt
 
 import pytest
@@ -47,6 +48,9 @@ def test_check_clock_lifecycle(win):
 
 def test_reduce_motion_disables_everything(win):
     setup_vault(win)
+    deadline = time.monotonic() + 3                    # a crossfade started while motion was still on must finish first
+    while getattr(win.stack, "_xfade", None) is not None and time.monotonic() < deadline:
+        QTest.qWait(50)
     anim.MOTION[0] = False
     lw = win.pages["today"].today
     micro.check_kick(lw, "abc", True)
