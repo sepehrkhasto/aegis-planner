@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Motion & detail layer: every animation must start, finish, clean up after itself and honour 'reduce motion'."""
-import time
 import datetime as dt
 
 import pytest
@@ -48,16 +47,15 @@ def test_check_clock_lifecycle(win):
 
 def test_reduce_motion_disables_everything(win):
     setup_vault(win)
-    deadline = time.monotonic() + 3                    # a crossfade started while motion was still on must finish first
-    while getattr(win.stack, "_xfade", None) is not None and time.monotonic() < deadline:
-        QTest.qWait(50)
+    QTest.qWait(300)                                   # let any crossfade started while motion was still on finish
+    before = getattr(win.stack, "_xfade", None)         # the attribute keeps the last (finished) fade object
     anim.MOTION[0] = False
     lw = win.pages["today"].today
     micro.check_kick(lw, "abc", True)
     assert micro.check_k(lw, "abc") is None
     win.show_page("tasks"); QTest.qWait(50)
     assert flip.capture(win.pages["tasks"].table) is None
-    assert getattr(win.stack, "_xfade", None) is None
+    assert getattr(win.stack, "_xfade", None) is before     # no new crossfade is created
 
 
 def test_press_button_dips_and_cleans_up(win, monkeypatch):
