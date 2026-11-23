@@ -1,3 +1,8 @@
+> **This is the `v3` branch: Aegis 3, a rewrite with a Rust core, is in progress.**
+> The released Python application (2.x) is in [`legacy/`](legacy/) here and on `main`.
+> Plan: [docs/v3/ROADMAP.fa.md](docs/v3/ROADMAP.fa.md) · design: [docs/v3/ARCHITECTURE.md](docs/v3/ARCHITECTURE.md) ·
+> rules: [docs/v3/ENGINEERING.md](docs/v3/ENGINEERING.md). Build and test the core with `cargo test --workspace`.
+
 <div align="center">
 
 # Aegis Planner

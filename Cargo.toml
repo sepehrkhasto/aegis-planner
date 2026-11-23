@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+[workspace]
+resolver = "3"
+members = ["crates/aegis-crypto", "crates/aegis-format"]
+
+[workspace.package]
+version = "3.0.0-alpha.1"
+edition = "2024"
+rust-version = "1.85"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/sepehrkhasto/aegis-planner"
+authors = ["Aegis contributors"]
+publish = false
+
+[workspace.dependencies]
+aegis-crypto = { path = "crates/aegis-crypto" }
+aegis-format = { path = "crates/aegis-format" }
+
+aes-gcm = { version = "0.10.3", default-features = false, features = ["aes", "alloc", "zeroize"] }
+base64 = { version = "0.22", default-features = false, features = ["alloc"] }
+getrandom = { version = "0.3", default-features = false, features = ["std"] }
+pbkdf2 = { version = "0.12", default-features = false, features = ["hmac"] }
+serde = { version = "1", default-features = false, features = ["std", "derive"] }
+serde_json = { version = "1", default-features = false, features = ["std"] }
+sha2 = { version = "0.10", default-features = false }
+thiserror = { version = "2", default-features = false }
+unicode-normalization = { version = "0.1", default-features = false, features = ["std"] }
+zeroize = { version = "1.8", default-features = false, features = ["alloc", "zeroize_derive"] }
+
+# test-only
+hex = "0.4"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+unreachable_pub = "warn"
+unused_qualifications = "warn"
+
+[workspace.lints.clippy]
+# No panics in library code: every failure is a typed error.
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+indexing_slicing = "deny"
+todo = "deny"
+unimplemented = "deny"
+unreachable = "deny"
+# Hygiene
+dbg_macro = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+mem_forget = "deny"
+as_conversions = "warn"
+cast_possible_truncation = "warn"
+cognitive_complexity = "warn"
+missing_errors_doc = "warn"
+undocumented_unsafe_blocks = "deny"
+
+[profile.dev.package."*"]
+# Key derivation runs 600 000 rounds in the tests; dependencies are optimised even in debug builds.
+opt-level = 3
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+strip = "symbols"

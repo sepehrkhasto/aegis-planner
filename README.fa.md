@@ -1,3 +1,7 @@
+> **این شاخهٔ `v3` است: بازنویسی Aegis 3 با هستهٔ Rust در جریان است.**
+> نسخهٔ منتشرشدهٔ پایتون (2.x) اینجا در پوشهٔ [`legacy/`](legacy/) و در شاخهٔ `main` است.
+> نقشهٔ راه: [docs/v3/ROADMAP.fa.md](docs/v3/ROADMAP.fa.md)
+
 <div dir="rtl" align="right">
 
 <div align="center">

@@ -1,0 +1,1 @@
+{"format": "securevault1", "kdf": "PBKDF2-SHA256", "iterations": 100000, "salt": "qedO9TaQ9k8FqMEgC0vkbg==", "wrappedKey": "LAc5JHqiooalOXKkoxwG4/fxOjgqZ45poYdqZD/ScMxh049324noQkj6N5wrCsGn", "wrappedKeyIv": "beZMKVrDEtmsfHoD", "ciphertext": "", "ciphertextIv": "", "recovery": null, "revision": 0, "unknownFutureField": {"keep": true}}

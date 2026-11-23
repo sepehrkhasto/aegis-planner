@@ -41,3 +41,6 @@ aegis.log*
 *.swp
 .DS_Store
 Thumbs.db
+
+# Rust
+/target/

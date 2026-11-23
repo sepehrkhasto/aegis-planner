@@ -1,0 +1,88 @@
+{
+ "comment": "Sample vaults written by legacy/ (Aegis 2.x). expect: ok | wrong_password | damaged | invalid.",
+ "cases": [
+  {
+   "file": "sample-standard.json",
+   "password": "hunter2-hunter2",
+   "expect": "ok",
+   "dek": "61de41e3412062054c6c74cdfccb4f8bfab7e523ee1ff34f279cc338d4b2fe3c",
+   "plaintext_sha256": "7d93748e483fc712e4823c86239004aea97f2731550fadd8ba776c8847d6d6e9",
+   "plaintext_len": 2989
+  },
+  {
+   "file": "sample-recovery.json",
+   "password": "hunter2-hunter2",
+   "recovery_key": "AEGIS-CC4VF-FPT1C-626FC-JPC77-WD8RN-MVBRK-97",
+   "recovery_key_typed": "  cc4vf-fpt1c-626fc-jpc77-wd8rn-mvbrk-97",
+   "expect": "ok",
+   "dek": "61de41e3412062054c6c74cdfccb4f8bfab7e523ee1ff34f279cc338d4b2fe3c",
+   "plaintext_sha256": "7d93748e483fc712e4823c86239004aea97f2731550fadd8ba776c8847d6d6e9",
+   "plaintext_len": 2989
+  },
+  {
+   "file": "sample-arabic-keyboard.json",
+   "password": "کلید ی ۱۴۰۵",
+   "expect": "ok",
+   "dek": "0b6b3da11c24b442f4ad76e162a9ecaff9ab7da9e065648ff3421f4562a6a1b8",
+   "plaintext_sha256": "031fd1a3b40ad04198e50aed08df76970e2e7d7d147c6a90bfd6b06bad6a9dfa",
+   "plaintext_len": 2989
+  },
+  {
+   "file": "sample-empty.json",
+   "password": "empty-vault-pw",
+   "expect": "ok",
+   "dek": "66f4639ef4a0e09313ce748c729d6a5878ac44c55ccc6eca4b98db8ccbf5f4e8",
+   "plaintext_sha256": null
+  },
+  {
+   "file": "sample-wrong-password.json",
+   "password": "hunter2-hunter3",
+   "expect": "wrong_password"
+  },
+  {
+   "file": "sample-tampered-ciphertext.json",
+   "password": "hunter2-hunter2",
+   "expect": "damaged"
+  },
+  {
+   "file": "sample-tampered-wrapped-key.json",
+   "password": "hunter2-hunter2",
+   "expect": "wrong_password"
+  },
+  {
+   "file": "sample-iterations-too-low.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  },
+  {
+   "file": "sample-iterations-too-high.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  },
+  {
+   "file": "sample-iterations-bool.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  },
+  {
+   "file": "sample-iterations-float.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  },
+  {
+   "file": "sample-unknown-kdf.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  },
+  {
+   "file": "sample-missing-salt.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  },
+  {
+   "file": "sample-salt-not-string.json",
+   "password": "hunter2-hunter2",
+   "expect": "invalid"
+  }
+ ]
+}
